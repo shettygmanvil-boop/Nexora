@@ -75,8 +75,8 @@ async def run_conflict_resolution(payload: ConflictResolutionRequest):
         tasks=[task],
     )
 
-    # 3. Kick off execution
-    result = crew.kickoff()
+    # 3. Kick off execution (async)
+    result = await crew.kickoff_async()
 
     # 4. Return the compromise itinerary
     return {
