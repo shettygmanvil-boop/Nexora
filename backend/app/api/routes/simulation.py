@@ -13,6 +13,8 @@ from app.agents.budget_agent.tasks import get_budget_optimization_task
 from app.agents.conflict_agent.conflict_agent import conflict_resolution_agent
 from app.agents.conflict_agent.conflict_tasks import get_conflict_resolution_task
 
+from typing import List
+
 router = APIRouter()
 
 class SimulationRequest(BaseModel):
@@ -20,6 +22,7 @@ class SimulationRequest(BaseModel):
     traveler_count: int
     demographic_notes: str
     budget_slider_value: dict
+    sub_groups: List[str] = []
 
 @router.post("/run-budget-simulation")
 async def run_budget_simulation(payload: SimulationRequest):
@@ -54,6 +57,7 @@ async def run_budget_simulation(payload: SimulationRequest):
 class ConflictResolutionRequest(BaseModel):
     traveler_profiles: list
     trip_context: str
+    sub_groups: List[str] = ["Teenagers who love beaches", "Parents who prefer temples"]
 
 
 @router.post("/conflict-resolution")
@@ -67,6 +71,7 @@ async def run_conflict_resolution(payload: ConflictResolutionRequest):
         agent=conflict_resolution_agent,
         traveler_profiles=payload.traveler_profiles,
         trip_context=payload.trip_context,
+        sub_groups=payload.sub_groups,
     )
 
     # 2. Assemble the Crew
