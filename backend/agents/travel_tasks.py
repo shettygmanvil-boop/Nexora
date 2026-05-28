@@ -1,7 +1,12 @@
-try:
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
     from crewai import Task
-except ImportError:
-    Task = None
+else:
+    try:
+        from crewai import Task
+    except ImportError:
+        Task = None
 
 def create_preference_task(agent, travelers_data: str) -> "Task":
     if Task is None:

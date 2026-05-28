@@ -558,11 +558,11 @@ def get_recommendations(request: GroupTripRequest) -> List[RecommendationDetails
         
         # Calculate expectation match
         exp_percentage, exp_summary = calculate_expectation_match(
-            request.preferred_vibe,
-            request.priorities,
-            request.expectations,
-            dest
-        )
+    getattr(request, "preferred_vibe", ""),
+    getattr(request, "priorities", []),
+    getattr(request, "expectations", ""),
+    dest
+)
         
         exp_match = ExpectationMatchResponse(
             match_percentage=exp_percentage,

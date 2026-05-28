@@ -44,7 +44,7 @@ def generate_mock_recommendation(request: TravelGroupRequest) -> RecommendationR
         else:
             dest_name = "bangalore"
             
-    dest = mock_db.DESTINATIONS[dest_name.lower()]
+    dest: Dict[str, Any] = mock_db.DESTINATIONS[dest_name.lower()]
     
     # 2. Compatibility Score
     comp_score = calculate_compatibility(request.travelers, dest["vibes"])
@@ -209,7 +209,7 @@ def run_travel_recommendation_crew(request: TravelGroupRequest) -> Recommendatio
     """
     llm = travel_agents.get_llm()
     
-    if llm is None or not CREWAI_AVAILABLE:
+    if llm is None or not CREWAI_AVAILABLE or Crew is None or Process is None:
         # Fall back to simulation
         return generate_mock_recommendation(request)
         
@@ -230,7 +230,10 @@ def run_travel_recommendation_crew(request: TravelGroupRequest) -> Recommendatio
     
     # Choose destination
     dest_name = request.destination_preference or "Goa"
-    dest = mock_db.get_destination(dest_name) or mock_db.get_destination("Goa")
+    dest_dict = mock_db.get_destination(dest_name) or mock_db.get_destination("Goa")
+    if not dest_dict:
+        dest_dict = mock_db.DESTINATIONS["goa"]
+    dest: Dict[str, Any] = dest_dict
     
     # Create the CrewAI tasks
     task_pref = travel_tasks.create_preference_task(pref_agent, travelers_str)
@@ -289,7 +292,7 @@ def run_travel_recommendation_crew(request: TravelGroupRequest) -> Recommendatio
     # and map it into our RecommendationResponse schema.
     # For this hackathon backend skeleton, we parse it if it is JSON, or we use our mock generator 
     # as a structured response wrapper around the crew's textual findings.
-    parsed_json = parse_json_safely(crew_output)
+    parsed_json = parse_json_safely(str(crew_output))
     
     if parsed_json and "destination_name" in parsed_json:
         # If the LLM successfully outputted exact JSON matching our structure, return it

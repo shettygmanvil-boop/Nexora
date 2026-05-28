@@ -17,11 +17,11 @@ def simulate_budget_adjustment(
     Simulates changes to lodging, activities, compatibility, and upgrades
     when the user adjusts the budget slider.
     """
-    dest = mock_db.DESTINATIONS.get(destination_name.lower())
-    if not dest:
-        # Fallback to Goa
-        dest = mock_db.DESTINATIONS["goa"]
+    dest_dict = mock_db.DESTINATIONS.get(destination_name.lower())
+    if not dest_dict:
+        dest_dict = mock_db.DESTINATIONS["goa"]
         destination_name = "Goa"
+    dest: Dict[str, Any] = dest_dict
         
     # Calculate new allocation
     accom_cost = target_budget * 0.45

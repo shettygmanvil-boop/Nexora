@@ -1,9 +1,14 @@
-try:
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
     from crewai import Agent
-    CREWAI_AVAILABLE = True
-except ImportError:
-    Agent = None
-    CREWAI_AVAILABLE = False
+else:
+    try:
+        from crewai import Agent
+        CREWAI_AVAILABLE = True
+    except ImportError:
+        Agent = None
+        CREWAI_AVAILABLE = False
 
 from backend.utils.config import settings
 from backend.prompts import agent_prompts
@@ -20,7 +25,7 @@ def get_llm():
             from langchain_openai import ChatOpenAI
             return ChatOpenAI(
                 model=settings.LLM_MODEL_NAME,
-                api_key=settings.OPENAI_API_KEY
+                api_key=settings.OPENAI_API_KEY  # type: ignore
             )
         except ImportError:
             pass

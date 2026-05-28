@@ -8,6 +8,8 @@ Provides curated travel data for prototype locations:
 - Jaipur (heritage tourism, temples, cultural experiences)
 """
 
+from typing import Optional
+
 DESTINATIONS = {
     "bangalore": {
         "name": "Bangalore",
@@ -187,7 +189,7 @@ DESTINATIONS = {
     }
 }
 
-def get_destination(dest_name: str) -> dict:
+def get_destination(dest_name: str) -> Optional[dict]:
     """Retrieve details for a specific destination name."""
     return DESTINATIONS.get(dest_name.lower())
 
