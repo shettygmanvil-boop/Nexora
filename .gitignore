@@ -2,7 +2,7 @@ venv/
 __pycache__/
 *.pyc
 .pytest_cache/
-backend/.env
+backend\.env
 .env
 .vscode/
 node_modules/
