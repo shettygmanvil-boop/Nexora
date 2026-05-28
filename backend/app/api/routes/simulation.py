@@ -10,6 +10,8 @@ from crewai import Crew
 
 from app.agents.budget_agent.agent import budget_optimization_agent
 from app.agents.budget_agent.tasks import get_budget_optimization_task
+from app.agents.conflict_agent.conflict_agent import conflict_resolution_agent
+from app.agents.conflict_agent.conflict_tasks import get_conflict_resolution_task
 
 router = APIRouter()
 
@@ -46,4 +48,38 @@ async def run_budget_simulation(payload: SimulationRequest):
     return {
         "status": "success",
         "data": result
+    }
+
+
+class ConflictResolutionRequest(BaseModel):
+    traveler_profiles: list
+    trip_context: str
+
+
+@router.post("/conflict-resolution")
+async def run_conflict_resolution(payload: ConflictResolutionRequest):
+    """
+    Kicks off a conflict resolution simulation using CrewAI.
+    Accepts clashing traveler preferences and returns a compromise itinerary.
+    """
+    # 1. Generate the conflict resolution task
+    task = get_conflict_resolution_task(
+        agent=conflict_resolution_agent,
+        traveler_profiles=payload.traveler_profiles,
+        trip_context=payload.trip_context,
+    )
+
+    # 2. Assemble the Crew
+    crew = Crew(
+        agents=[conflict_resolution_agent],
+        tasks=[task],
+    )
+
+    # 3. Kick off execution
+    result = crew.kickoff()
+
+    # 4. Return the compromise itinerary
+    return {
+        "status": "success",
+        "data": result,
     }
