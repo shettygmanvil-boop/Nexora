@@ -13,3 +13,6 @@ os.environ.setdefault("OPENWEATHER_API_KEY", "")     # simulation mode
 os.environ.setdefault("AQICN_API_KEY", "")
 os.environ.setdefault("SECRET_KEY", "test-secret-key")
 os.environ.setdefault("DATABASE_URL", "sqlite+aiosqlite:///./test.db")
+os.environ.setdefault("VOLUNTEER_YATRA_ENABLED", "true")
+
+

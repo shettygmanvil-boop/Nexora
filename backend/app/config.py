@@ -65,6 +65,11 @@ class Settings(BaseSettings):
     # ── Logging ────────────────────────────────────────────────────────────
     log_level: str = Field(default="INFO")
 
+    # ── Volunteer Yatra ────────────────────────────────────────────────────
+    volunteer_yatra_enabled: bool = Field(
+        default=True, description="Enable Volunteer Yatra module routes"
+    )
+
     @property
     def is_production(self) -> bool:
         return self.app_env == "production"

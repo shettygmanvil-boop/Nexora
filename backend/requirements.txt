@@ -27,8 +27,9 @@ openai>=1.30.0
 python-dotenv==1.0.1
 
 # --- Database ---
-sqlalchemy==2.0.30
+sqlalchemy>=2.0.36
 asyncpg==0.29.0
+aiosqlite==0.20.0
 alembic==1.13.1
 
 # --- Caching ---

@@ -12,6 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.config import settings
+from app.db.session import close_db, init_db
 
 # ── Route Imports ─────────────────────────────────────────────────────────────
 # Import each router as it is implemented by individual team members.
@@ -27,6 +28,7 @@ from app.api.routes.recommendation import router as recommendation_router
 from app.api.routes.recommendation import recommend_router as recommend_router_root
 # from app.api.routes.compatibility import router as compatibility_router
 # from app.api.routes.auth import router as auth_router
+from app.volunteer_yatra.routes import router as volunteer_yatra_router
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +45,11 @@ async def lifespan(app: FastAPI):
         format="%(asctime)s | %(levelname)-8s | %(name)s | %(message)s",
     )
     logger.info("🗺️  Maproom backend starting up — env=%s", settings.app_env)
+    if settings.volunteer_yatra_enabled:
+        await init_db()
+        logger.info("Volunteer Yatra database initialized")
     yield
+    await close_db()
     logger.info("🗺️  Maproom backend shutting down")
 
 
@@ -83,6 +89,13 @@ def create_app() -> FastAPI:
     app.include_router(simulation_router, prefix="/api", tags=["Simulation"])
     app.include_router(recommendation_router, prefix="/api", tags=["Recommendation Engine"])
     app.include_router(recommend_router_root, prefix="/api", tags=["Recommendation Engine"])
+
+    if settings.volunteer_yatra_enabled:
+        app.include_router(
+            volunteer_yatra_router,
+            prefix="/api/volunteer-yatra",
+            tags=["Volunteer Yatra"],
+        )
 
     # ── Health Check ──────────────────────────────────────────────────────────
     @app.get("/health", tags=["System"])
