@@ -40,6 +40,25 @@ from app.schemas.weather_schema import (
 
 logger = logging.getLogger(__name__)
 
+def get_weather_health_agent(llm=None):
+    """Shim for integration with crew_service."""
+    try:
+        from crewai import Agent
+        from app.agents.weather_agent.prompts import (
+            WEATHER_AGENT_BACKSTORY,
+            WEATHER_AGENT_GOAL,
+            WEATHER_AGENT_ROLE,
+        )
+        return Agent(
+            role=WEATHER_AGENT_ROLE,
+            goal=WEATHER_AGENT_GOAL,
+            backstory=WEATHER_AGENT_BACKSTORY,
+            llm=llm,
+            verbose=True,
+            allow_delegation=False
+        )
+    except ImportError:
+        return None
 
 class WeatherIntelligenceAgent:
     """

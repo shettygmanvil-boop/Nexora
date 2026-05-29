@@ -16,7 +16,10 @@ from __future__ import annotations
 import json
 from typing import TYPE_CHECKING
 
-from crewai import Task
+try:
+    from crewai import Task
+except ImportError:
+    Task = None
 
 from app.agents.weather_agent.prompts import (
     ENVIRONMENTAL_ANALYSIS_TASK,
@@ -28,6 +31,16 @@ from app.schemas.weather_schema import EnvironmentalMetrics, TravelerProfile
 
 if TYPE_CHECKING:
     from crewai import Agent
+
+def get_weather_health_task(agent: "Agent", weather_profile: str, medical_conditions: str) -> Task:
+    """Shim for integration with crew_service."""
+    if Task is None:
+        raise RuntimeError("crewai is not installed")
+    return Task(
+        description=f"Analyse the following weather profile: {weather_profile} considering these medical conditions: {medical_conditions}.",
+        expected_output="A summary of weather-related health risks and recommendations.",
+        agent=agent,
+    )
 
 
 def build_traveler_profiles_json(travelers: list[TravelerProfile]) -> str:
@@ -76,6 +89,8 @@ def create_environmental_analysis_task(
         weather_description=metrics.weather_description,
     )
 
+    if Task is None:
+        raise RuntimeError("crewai is not installed")
     return Task(
         description=description,
         expected_output=(
@@ -114,6 +129,8 @@ def create_medical_suitability_task(
         traveler_profiles_json=traveler_profiles_json,
     )
 
+    if Task is None:
+        raise RuntimeError("crewai is not installed")
     return Task(
         description=description,
         expected_output=(
@@ -156,6 +173,8 @@ def create_recommendation_task(
         + OUTPUT_FORMAT_INSTRUCTION
     )
 
+    if Task is None:
+        raise RuntimeError("crewai is not installed")
     return Task(
         description=description,
         expected_output=(

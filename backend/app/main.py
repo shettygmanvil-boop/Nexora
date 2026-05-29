@@ -19,10 +19,12 @@ from app.config import settings
 from app.api.routes.weather import router as weather_router
 
 # Future routers (uncomment as each Phase is implemented):
-# from app.api.routes.trip import router as trip_router
-# from app.api.routes.itinerary import router as itinerary_router
-# from app.api.routes.hotels import router as hotels_router
-# from app.api.routes.simulation import router as simulation_router
+from app.api.routes.trip import router as trip_router
+from app.api.routes.itinerary import router as itinerary_router
+from app.api.routes.hotels import router as hotels_router
+from app.api.routes.simulation import router as simulation_router
+from app.api.routes.recommendation import router as recommendation_router
+from app.api.routes.recommendation import recommend_router as recommend_router_root
 # from app.api.routes.compatibility import router as compatibility_router
 # from app.api.routes.auth import router as auth_router
 
@@ -75,9 +77,12 @@ def create_app() -> FastAPI:
     app.include_router(weather_router, prefix="/api", tags=["Weather Intelligence"])
 
     # Future routers (add here as phases are completed):
-    # app.include_router(trip_router, prefix="/api", tags=["Trip Planning"])
-    # app.include_router(itinerary_router, prefix="/api", tags=["Itinerary"])
-    # app.include_router(hotels_router, prefix="/api", tags=["Hotels"])
+    app.include_router(trip_router, prefix="/api", tags=["Trip Planning"])
+    app.include_router(itinerary_router, prefix="/api", tags=["Itinerary"])
+    app.include_router(hotels_router, prefix="/api", tags=["Hotels"])
+    app.include_router(simulation_router, prefix="/api", tags=["Simulation"])
+    app.include_router(recommendation_router, prefix="/api", tags=["Recommendation Engine"])
+    app.include_router(recommend_router_root, prefix="/api", tags=["Recommendation Engine"])
 
     # ── Health Check ──────────────────────────────────────────────────────────
     @app.get("/health", tags=["System"])

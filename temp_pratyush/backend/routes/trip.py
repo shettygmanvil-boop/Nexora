@@ -1,13 +1,13 @@
 from fastapi import APIRouter, HTTPException, Query
 from typing import List, Optional
 
-from app.schemas.trip import (
+from backend.models.trip import (
     Traveler,
     GroupTripRequest,
     DestinationDetail,
     RecommendationResponse
 )
-from app.database.destinations import (
+from backend.database.destinations import (
     get_all_destinations,
     get_destination_by_name,
     get_destinations_by_vibe
