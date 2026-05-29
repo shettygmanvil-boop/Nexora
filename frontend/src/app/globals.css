@@ -1,0 +1,176 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --background: #06040d; /* Cyberpunk very dark base */
+    --foreground: #e2e8f0;
+    
+    /* Cyberpunk Neon Theme Colors */
+    --neon-blue: #00f0ff;
+    --neon-purple: #bd00ff;
+    --neon-pink: #ff007f;
+    --glass-bg: rgba(13, 8, 28, 0.65);
+    --glass-border: rgba(0, 240, 255, 0.18);
+    --glass-border-purple: rgba(189, 0, 255, 0.18);
+    
+    /* Neumorphic Soft Shadows (Dark theme optimized) */
+    --neu-shadow-outset: 5px 5px 10px #020104, -5px -5px 10px #110c26;
+    --neu-shadow-inset: inset 5px 5px 10px #020104, inset -5px -5px 10px #110c26;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    background: radial-gradient(circle at 50% 50%, #110b28 0%, #06040d 100%);
+    color: var(--foreground);
+    font-family: 'Outfit', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Custom Cyberpunk grid overlay */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      linear-gradient(rgba(189, 0, 255, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 240, 255, 0.02) 1px, transparent 1px);
+    background-size: 30px 30px;
+    z-index: -1;
+    pointer-events: none;
+  }
+}
+
+/* Glassmorphism Frosted Cyber Card */
+.glass-card-blue {
+  background: var(--glass-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 240, 255, 0.06);
+  border-radius: 14px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.glass-card-purple {
+  background: var(--glass-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--glass-border-purple);
+  box-shadow: 0 8px 32px 0 rgba(189, 0, 255, 0.06);
+  border-radius: 14px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.glass-card-blue:hover, .glass-card-purple:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px 0 rgba(0, 240, 255, 0.15);
+  border-color: rgba(0, 240, 255, 0.4);
+}
+
+/* Neumorphic Soft Bevel Controls */
+.neu-button-outset {
+  background: #0d081c;
+  box-shadow: var(--neu-shadow-outset);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  transition: all 0.2s ease-in-out;
+}
+
+.neu-button-outset:hover {
+  box-shadow: 3px 3px 6px #020104, -3px -3px 6px #110c26;
+  border-color: var(--neon-blue);
+}
+
+.neu-button-outset:active {
+  box-shadow: var(--neu-shadow-inset);
+}
+
+.neu-input-inset {
+  background: #06040d;
+  box-shadow: var(--neu-shadow-inset);
+  border: 1px solid rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  color: var(--foreground);
+  outline: none;
+  transition: border-color 0.2s ease-in-out;
+}
+
+.neu-input-inset:focus {
+  border-color: var(--neon-purple);
+}
+
+/* Neon Glow Texts and Borders */
+.text-glow-blue {
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+}
+
+.text-glow-purple {
+  text-shadow: 0 0 8px rgba(189, 0, 255, 0.6);
+}
+
+.border-glow-blue {
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+}
+
+.border-glow-purple {
+  box-shadow: 0 0 10px rgba(189, 0, 255, 0.3);
+}
+
+/* Cyberpunk Scanner Line Effect */
+@keyframes scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+.scan-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+  animation: scan 6s linear infinite;
+  pointer-events: none;
+  opacity: 0.45;
+}
+
+/* Lazy Loading Fade-In Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-lazy-fade {
+  animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+.delay-1 { animation-delay: 0.15s; }
+.delay-2 { animation-delay: 0.3s; }
+.delay-3 { animation-delay: 0.45s; }
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #06040d;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #bd00ff;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #00f0ff;
+}
