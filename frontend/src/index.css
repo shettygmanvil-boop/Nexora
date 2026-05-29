@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+@theme {
+  --font-orbitron: "Orbitron", sans-serif;
+  --font-sans: "Inter", sans-serif;
+  
+  --color-cyber-purple: #9333ea;
+  --color-cyber-blue: #2563eb;
+  --color-cyber-teal: #0d9488;
+  --color-cyber-neon: #14b8a6;
+  --color-cyber-indigo: #4f46e5;
+  --color-cyber-rose: #e11d48;
+}
+
+/* Custom Utilities and Animations */
+@layer utilities {
+  .glass-panel {
+    background: rgba(13, 18, 30, 0.45);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .glass-panel-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .glass-panel-hover:hover {
+    background: rgba(13, 18, 30, 0.6);
+    border-color: rgba(20, 184, 166, 0.3);
+    box-shadow: 0 0 20px rgba(20, 184, 166, 0.15);
+  }
+
+  .text-glow-teal {
+    text-shadow: 0 0 10px rgba(20, 184, 166, 0.6), 0 0 20px rgba(20, 184, 166, 0.2);
+  }
+
+  .text-glow-indigo {
+    text-shadow: 0 0 10px rgba(99, 102, 241, 0.6), 0 0 20px rgba(99, 102, 241, 0.2);
+  }
+  
+  .text-glow-rose {
+    text-shadow: 0 0 10px rgba(244, 63, 94, 0.6), 0 0 20px rgba(244, 63, 94, 0.2);
+  }
+
+  .border-glow-teal {
+    box-shadow: 0 0 15px rgba(20, 184, 166, 0.25);
+    border-color: rgba(20, 184, 166, 0.5);
+  }
+
+  .cyber-grid {
+    background-image: 
+      linear-gradient(rgba(20, 184, 166, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(20, 184, 166, 0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: center;
+  }
+
+  .cyber-radial-glow {
+    background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.12) 0%, rgba(3, 7, 18, 0) 70%);
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #030712;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(20, 184, 166, 0.4);
+}
+
+/* Pulse animation for scanner effects */
+@keyframes cyber-scan {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+.animate-scan {
+  animation: cyber-scan 6s linear infinite;
+}
+
+/* Animated futuristic background gradient */
+@keyframes gradient-bg {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient-bg {
+  background-size: 200% 200%;
+  animation: gradient-bg 15s ease infinite;
+}
