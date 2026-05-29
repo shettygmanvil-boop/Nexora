@@ -20,11 +20,22 @@ from app.api.routes.trip import router as trip_router
 from app.models.trip import GroupTripRequest
 from app.services.recommendation_service import get_recommendations
 
+from contextlib import asynccontextmanager
+from app.services.db_seed import initialize_database
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Initialize the database on startup
+    await initialize_database()
+    yield
+    # Cleanup on shutdown (if needed)
+
 # 1. Initialize FastAPI application instance
 app = FastAPI(
     title="Maproom Backend Orchestrator",
     description="CrewAI-powered travel orchestration platform backend API (Integrated)",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan
 )
 
 # Enable CORS for frontend requests

@@ -58,6 +58,9 @@ class Settings(BaseSettings):
     # ── Gemini / LLM ──────────────────────────────────────────────────────
     gemini_api_key: str = Field(default="", description="Gemini API key")
 
+    # ── Google Maps / Places API ──────────────────────────────────────────
+    google_maps_api_key: str = Field(default="", description="Google Maps / Places API key")
+
     # ── OpenWeatherMap ─────────────────────────────────────────────────────
     openweather_api_key: str = Field(default="", description="OpenWeatherMap API key")
     openweather_base_url: str = Field(
@@ -70,7 +73,7 @@ class Settings(BaseSettings):
 
     # ── Database ───────────────────────────────────────────────────────────
     database_url: str = Field(
-        default="postgresql+asyncpg://postgres:password@localhost:5432/maproom"
+        default="sqlite+aiosqlite:///./maproom.db"
     )
 
     # ── Redis ──────────────────────────────────────────────────────────────
@@ -110,6 +113,10 @@ class Settings(BaseSettings):
     @property
     def GEMINI_API_KEY(self) -> str:
         return self.gemini_api_key
+
+    @property
+    def GOOGLE_MAPS_API_KEY(self) -> str:
+        return self.google_maps_api_key
 
     @property
     def is_production(self) -> bool:

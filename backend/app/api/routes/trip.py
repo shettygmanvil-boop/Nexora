@@ -125,6 +125,65 @@ def validate_trip(request: GroupTripRequest):
             f"Veg food availability in {dest_name} is rated '{recommended_dest.get('veg_food_availability')}', which is perfect for vegetarians in the group."
         ]
         
+        # Analyze expectations text dynamically
+        exp_text = request.expectations.lower() if request.expectations else ""
+        expectation_reasons = []
+        expectation_score_adj = 0
+        
+        if "sunset" in exp_text or "view" in exp_text or "scenic" in exp_text:
+            if dest_name.lower() in ["srinagar", "goa"]:
+                expectation_reasons.append(f"Beautiful scenic spots and sunset views in {dest_name} perfectly match your request.")
+                expectation_score_adj += 10
+            else:
+                expectation_reasons.append(f"Some scenic spots are available in {dest_name}, but it's not the primary attraction.")
+                expectation_score_adj += 2
+                
+        if "peaceful" in exp_text or "quiet" in exp_text or "detox" in exp_text or "less crowd" in exp_text:
+            if recommended_dest.get("peacefulness_score", 5) >= 7:
+                expectation_reasons.append(f"{dest_name} is known for its serene, peaceful, and quiet environment.")
+                expectation_score_adj += 10
+            else:
+                expectation_reasons.append(f"Note: {dest_name} has a lower peacefulness rating ({recommended_dest.get('peacefulness_score')}/10) and can be crowded.")
+                expectation_score_adj -= 10
+
+        if "veg" in exp_text or "vegetarian" in exp_text:
+            if recommended_dest.get("veg_food_availability", "Medium") == "High":
+                expectation_reasons.append(f"Excellent variety of pure vegetarian food is widely available in {dest_name}.")
+                expectation_score_adj += 8
+            else:
+                expectation_reasons.append(f"Vegetarian food options are available in {dest_name}, but local cuisine is meat/seafood heavy.")
+                expectation_score_adj -= 2
+
+        if "adventure" in exp_text or "sport" in exp_text or "trek" in exp_text:
+            if recommended_dest.get("adventure_score", 5) >= 7:
+                expectation_reasons.append(f"Thrilling activities like trekking, water sports, or paragliding are popular in {dest_name}.")
+                expectation_score_adj += 10
+            else:
+                expectation_reasons.append(f"Limited outdoor adventure sports options in {dest_name}.")
+                expectation_score_adj -= 5
+
+        if "nightlife" in exp_text or "party" in exp_text or "club" in exp_text:
+            if recommended_dest.get("nightlife_score", 5) >= 7:
+                expectation_reasons.append(f"Vibrant nightlife, pubs, and evening parties are highly accessible in {dest_name}.")
+                expectation_score_adj += 10
+            else:
+                expectation_reasons.append(f"Quiet evenings in {dest_name}; nightlife is very limited.")
+                expectation_score_adj -= 10
+
+        if "luxury" in exp_text or "palace" in exp_text or "premium" in exp_text:
+            if recommended_dest.get("luxury_score", 5) >= 8:
+                expectation_reasons.append(f"High-end royal palaces, heritage hotels, and premium services are a hallmark of {dest_name}.")
+                expectation_score_adj += 10
+            else:
+                expectation_reasons.append(f"Standard accommodation is common; true premium luxury is sparse in {dest_name}.")
+                expectation_score_adj -= 5
+                
+        # Merge expectation reasons
+        if expectation_reasons:
+            reasons = expectation_reasons + reasons
+            compatibility += expectation_score_adj
+            compatibility = max(0.0, min(100.0, compatibility))
+        
         # 4. Generate budget summary
         budget_level = "economy"
         if avg_budget_per_day >= 8000:

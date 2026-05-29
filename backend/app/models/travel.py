@@ -12,16 +12,19 @@ class TravelerProfile(BaseModel):
     accommodation_preference: str = Field(default="standard", description="Accommodation tier preference (budget, standard, luxury)")
     travel_style: str = Field(default="relaxation", description="Preferred travel style (relaxation, adventure, photography, workcation, digital detox)")
     travel_purpose: str = Field(default="leisure", description="Travel purpose (relaxation, adventure, spirituality, luxury, family bonding, workcation, photography, digital detox)")
+    food_preference: str = Field(default="veg", description="Food taste / preference (veg, non-veg, vegan)")
 
 class TravelGroupRequest(BaseModel):
     """
     Request model for travel recommendation.
     """
     travelers: List[TravelerProfile] = Field(..., description="List of travelers in the group")
-    total_budget: float = Field(..., description="Total combined travel budget in INR")
-    num_days: int = Field(default=3, description="Number of days of stay")
+    total_budget: Optional[float] = Field(None, description="Total combined travel budget in INR")
+    num_days: Optional[int] = Field(3, description="Number of days of stay")
     expectations: str = Field("", description="Expectation statement, e.g., 'I want a peaceful lake with less crowd and sunset views.'")
     destination_preference: Optional[str] = Field(None, description="Optional chosen location name (e.g., Goa, Bangalore, Srinagar, Jaipur). Leave empty if confused.")
+    hotel_count: int = Field(default=3, description="Number of hotel recommendations to return, between 3 and 10", ge=3, le=10)
+    priorities: List[str] = Field(default_factory=list, description="Ordered priorities of the user")
 
 class ItineraryActivity(BaseModel):
     """
@@ -77,6 +80,17 @@ class SimulationResponse(BaseModel):
     compatibility_score: float
     itinerary_changes: List[str]
 
+class HotelRecommendation(BaseModel):
+    """
+    Represents hotel or restaurant recommendation details with review sentiments.
+    """
+    name: str = Field(..., description="Name of the hotel or restaurant")
+    price_per_night: float = Field(..., description="Price per night or cost per head in INR")
+    rating: float = Field(..., description="Rating out of 5")
+    amenities: List[str] = Field(default_factory=list, description="Key amenities offered")
+    reviews: List[str] = Field(default_factory=list, description="Snippet of reviews")
+    specialty_keyword: str = Field(..., description="A keyword highlighting the specialty (e.g. Value for Money)")
+
 class RecommendationResponse(BaseModel):
     """
     Ultimate structured output of Maproom's Multi-Agent Recommendation System.
@@ -93,3 +107,4 @@ class RecommendationResponse(BaseModel):
     expectation_reality_match: MatchScoreDetail = Field(..., description="Score and justification matching user's written expectations")
     explainable_ai_reasons: List[str] = Field(..., description="Bullet points explaining why this plan is optimized for the group")
     smart_budget_expansions: List[str] = Field(..., description="Upsell suggestions detailing what slightly more budget would unlock")
+    hotels: List[HotelRecommendation] = Field(default_factory=list, description="Recommended hotel options (3 to 10)")

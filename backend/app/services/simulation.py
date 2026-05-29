@@ -6,6 +6,7 @@ from app.models.travel import (
 )
 from app.database import mock_db
 from app.utils.helpers import calculate_compatibility
+from app.services import places_service
 
 def simulate_budget_adjustment(
     destination_name: str,
@@ -46,8 +47,9 @@ def simulate_budget_adjustment(
     suggested_upgrades = []
     itinerary_changes = []
     
-    # Accommodation options in destination
-    hotels = sorted(dest["hotels"], key=lambda x: x["price_per_night"])
+    # Accommodation options in destination (Google Places live fetch)
+    live_hotels = places_service.get_live_hotels(destination_name, limit=10)
+    hotels = sorted(live_hotels, key=lambda x: x["price_per_night"])
     # Standard cost estimate for hotels based on target_budget / num_days
     nightly_allowance = accom_cost / max(1, num_days)
     
@@ -66,16 +68,17 @@ def simulate_budget_adjustment(
                 f"Upgrade to '{hotel['name']}' ({hotel['tier'].capitalize()} tier) by adding approx {round(diff, 0)} INR to lodging budget."
             )
             
-    # Attraction simulation
+    # Attraction simulation (Google Places live fetch)
+    live_attractions = places_service.get_live_attractions(destination_name, limit=10)
     unlocked_attractions = []
-    for attr in dest["attractions"]:
+    for attr in live_attractions:
         if attr["cost"] <= activities_cost:
             unlocked_attractions.append(attr["name"])
             
     itinerary_changes.append(f"Sightseeing package unlocks: {', '.join(unlocked_attractions[:3])}.")
     
     # Suggest premium activities if budget permits
-    expensive_attractions = [a for a in dest["attractions"] if a["cost"] > 1000]
+    expensive_attractions = [a for a in live_attractions if a["cost"] > 1000]
     for exp_a in expensive_attractions:
         if exp_a["cost"] > activities_cost:
             diff = exp_a["cost"] - activities_cost
